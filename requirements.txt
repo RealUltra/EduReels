@@ -1,0 +1,8 @@
+moviepy==1.0.3
+ffmpeg-python
+pyttsx3
+
+whisperx
+pyannote-audio
+torch
+torchaudio
