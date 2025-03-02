@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EduReels - Simplifying your Educational Journey</title>
+  <h1><i>EduReels</i></h1>
+  <!--Utilising CSS to implement the desired font unavailable within the standard html.-->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Socket.IO client library -->
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: 'JetBrains Mono';
+      background: #f7f7f7;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .drop-zone {
+      text-align: center;
+      color: yellow;
+      background: #141414;
+      width: 600px;
+      height: 190px;
+      border: 4px dashed black;
+      border-radius: 10px;
+      padding: 50px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .drop-zone.dragover {
+      background-color: #e9f5ff;
+    }
+
+    #fileList {
+      margin-top: 20px;
+      width: 300px;
+    }
+
+    .file-item {
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+    }
+
+    p {
+      font-family: 'JetBrains Mono';
+      font-size: 25px;
+      color: white;
+    }
+
+    p1 {
+      font-family:'JetBrains Mono';
+      color: white;
+      font-size: 25px;
+      margin-left: 5px;
+      display: flex;
+      list-style-type: none;
+      padding: 0;
+      overflow: hidden;
+      width: 55%;
+    }
+
+    h1 {
+      color: #FF69B4;
+      font-family: 'JetBrains Mono';
+      font-size: 60px;
+      text-align: center;
+      margin-right: auto;
+    }
+
+    h2 {
+      color: #FF69B4;
+      font-family: 'JetBrains Mono';
+      font-size: 45px;
+      text-align: center;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    h3 {
+      color: #FF69B4;
+      font-family: 'JetBrains Mono';
+      font-size: 45px;
+      text-align: center;
+    }
+
+    h4 {
+      color: #FF69B4;
+      font-family: 'JetBrains Mono';
+      font-size: 28px;
+      text-align: center;
+    }
+
+    h6 {
+      color: white;
+      font-family: 'JetBrains Mono';
+      font-size: 40px;
+    }
+
+    ul {
+      font-size: 20px;
+    }
+
+    /* Styles for the buttons and status indicator */
+    #submitSection {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      background-color: #FF69B4;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 0 10px;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #e65a9c;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    #statusIndicator {
+      font-size: 18px;
+      color: white;
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* Video display styling */
+    #videoDisplay {
+      width: 600px;
+      margin-top: 20px;
+      display: none; /* hidden by default until video data is available */
+    }
+  </style>
+</head>
+<body style="background-color:#2e1a47;">
+
+  <h2> Welcome to the next step in making educational content effective. </h2>
+  <div class="drop-zone" id="dropZone">
+      <br>
+      <p><strong>Drag & Drop your PDF here and </strong></p>
+      <p><strong>let EduReels do the rest!</strong></p>
+      <!-- Hidden file input for manual selection -->
+      <input type="file" id="fileRequest" style="display: none;" accept="application/pdf" />
+  </div>
+
+  <div id="fileList"></div>
+
+  <h4> Write a prompt to go along with your video below (Optional):</h4>
+  <textarea style="width: 500px; height: 75px;" placeholder="Explain Chapter 29 from this book..."></textarea>
+
+  <div id="submitSection">
+      <button id="submitButton">Submit</button>
+      <span id="statusIndicator">Status: Idle</span>
+  </div>
+
+  <!-- Video element (hidden by default) -->
+  <video id="videoDisplay" controls></video>
+
+  <!-- I implemented the italics into "The Finals to emphasize the significance the achievement holds."-->
+  <h3> Our mission</h3>
+  <p1> Throughout history, virtually all aspects of society have undergone significant change. That is, all but education. The educational system has seemed to prioritize outdated practices and methods when it comes to student learning. </p1>
+  <h6> EduReels aims to fix this with: </h6>
+  <ul style="color:gold">
+      <li> <i> Informative educational content </i> in the form of videos. </li>
+      <li> <i> Providing concise explanations </i> to improve student learning. </li>
+      <li> <i> Engaging and stimulating </i> production <b>instantly.</b></li>
+  </ul>
+
+  <script>
+    // Initialize Socket.IO
+    const socket = io();
+
+    const dropZone = document.getElementById('dropZone');
+    const fileRequest = document.getElementById('fileRequest');
+    const fileList = document.getElementById('fileList');
+    const submitButton = document.getElementById('submitButton');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const promptTextArea = document.querySelector("textarea");
+    const videoDisplay = document.getElementById("videoDisplay");
+
+    // Global variable to hold the selected file
+    let selectedFile = null;
+    var video; // global variable to hold video URL if needed
+
+    // When the dropzone is clicked, trigger file input click
+    dropZone.addEventListener('click', () => {
+      fileRequest.click();
+    });
+
+    // Handle file selection from the dialog.
+    fileRequest.addEventListener('change', (e) => {
+      handleFiles(e.target.files);
+    });
+
+    // Prevent default behavior for drag events.
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+
+    // Highlight the drop area when a file is dragged over it.
+    dropZone.addEventListener('dragover', () => {
+      dropZone.classList.add('dragover');
+    });
+
+    // Remove the highlight when the drag leaves the drop area.
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    // Handle file drop.
+    dropZone.addEventListener('drop', (e) => {
+      dropZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      handleFiles(files);
+    });
+
+    // Process selected files.
+    function handleFiles(files) {
+      fileList.innerHTML = ''; // Clear previous entries.
+      // Only take the first valid PDF file.
+      selectedFile = null;
+      Array.from(files).forEach(file => {
+        if (file.type === 'application/pdf') {
+          const div = document.createElement('div');
+          div.className = 'file-item';
+          div.textContent = file.name;
+          fileList.appendChild(div);
+          selectedFile = file; // set the global file
+        } else {
+          alert(`Error: ${file.name} is not a PDF file.`);
+        }
+      });
+    }
+
+    // Submit button functionality with SocketIO integration.
+    submitButton.addEventListener('click', () => {
+      // Ensure a PDF file is selected.
+      if (!selectedFile) {
+        alert("Please drag & drop a PDF file before generating.");
+        return;
+      }
+
+      const promptText = promptTextArea.value;
+      statusIndicator.textContent = "Status: Generating...";
+
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const fileData = e.target.result;
+        socket.emit("generate", { file: fileData, prompt: promptText });
+      };
+
+      reader.readAsDataURL(selectedFile);
+    });
+
+    function b64toBlob(b64Data, contentType = '', sliceSize = 1024) {
+      const byteCharacters = atob(b64Data);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+
+      return new Blob(byteArrays, { type: contentType });
+    }
+
+    // Listen for "video" event from the server.
+    // Expects an object with keys "file" (Base64 encoded) and "type" (MIME type)
+    socket.on("video", (msg) => {
+        const videoBlob = b64toBlob(msg.file, msg.type);
+        const videoURL = URL.createObjectURL(videoBlob);
+
+        video = videoURL;
+
+        videoDisplay.src = videoURL;
+        videoDisplay.style.display = "block";
+
+        statusIndicator.textContent = "Status: Idle";
+    });
+  </script>
+</body>
+</html>
