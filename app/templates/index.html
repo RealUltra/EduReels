@@ -2,17 +2,15 @@
 <html>
 <head>
   <title>EduReels - Simplifying your Educational Journey</title>
-
   <h1><i>EduReels</i></h1>
   <!--Utilising CSS to implement the desired font unavailable within the standard html.-->
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <!-- Socket.IO client library -->
   <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
   <style>
-    
     body {
       font-family: 'JetBrains Mono';
-      background: #f7f7f7;
+      background: #2f1c49;
       margin: 0;
       display: flex;
       flex-direction: column;
@@ -23,7 +21,7 @@
     .drop-zone {
       text-align: center;
       color: yellow;
-      background: #141414;
+      background: #c7b9da;
       width: 600px;
       height: 190px;
       border: 4px dashed black;
@@ -58,7 +56,7 @@
 
     p1 {
       font-family:'JetBrains Mono';
-      color: white;
+      color: #2f1c49;
       font-size: 25px;
       margin-left: 5px;
       display: flex;
@@ -69,7 +67,7 @@
     }
 
     h1 {
-      color: #FF69B4;
+      color: #2f1c49;
       font-family: 'JetBrains Mono';
       font-size: 60px;
       text-align: center;
@@ -77,7 +75,7 @@
     }
 
     h2 {
-      color: #FF69B4;
+      color: #2f1c49;
       font-family: 'JetBrains Mono';
       font-size: 45px;
       text-align: center;
@@ -87,21 +85,21 @@
     }
 
     h3 {
-      color: #FF69B4;
+      color: #2f1c49;
       font-family: 'JetBrains Mono';
       font-size: 45px;
       text-align: center;
     }
 
     h4 {
-      color: #FF69B4;
+      color: #2f1c49;
       font-family: 'JetBrains Mono';
       font-size: 28px;
       text-align: center;
     }
 
     h6 {
-      color: white;
+      color: #2f1c49;
       font-family: 'JetBrains Mono';
       font-size: 40px;
     }
@@ -152,7 +150,7 @@
     }
   </style>
 </head>
-<body style="background-color:#2e1a47;">
+<body style="background-color:#c7b9da;">
 
   <h2> Welcome to the next step in making educational content effective. </h2>
   <div class="drop-zone" id="dropZone">
@@ -176,11 +174,10 @@
   <!-- Video element (hidden by default) -->
   <video id="videoDisplay" controls></video>
 
-  <!-- I implemented the italics into "The Finals to emphasize the significance the achievement holds."-->
   <h3> Our mission</h3>
   <p1> Throughout history, virtually all aspects of society have undergone significant change. That is, all but education. The educational system has seemed to prioritize outdated practices and methods when it comes to student learning. </p1>
   <h6> EduReels aims to fix this with: </h6>
-  <ul style="color:gold">
+  <ul style="color: #2f1c49;">
       <li> <i> Informative educational content </i> in the form of videos. </li>
       <li> <i> Providing concise explanations </i> to improve student learning. </li>
       <li> <i> Engaging and stimulating </i> production <b>instantly.</b></li>
@@ -307,6 +304,6 @@
         statusIndicator.textContent = "Status: Idle";
     });
   </script>
-  <tr style = "color:gold"> <th><img src = "{{ url_for('static', filename='logo.png') }}" width = "500"></th> </td>
+  <tr style = "color:gold"> <th><img src = "{{ url_ for('static', filename='logo.png') }}" width = "500"></th> </td>
 </body>
 </html>
