@@ -8,4 +8,7 @@ torch
 torchaudio
 
 google-generativeai 
-PyPDF2
+python-dotenv
+
+flask
+flask_socketio
