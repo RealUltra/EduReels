@@ -6,3 +6,6 @@ whisperx
 pyannote-audio
 torch
 torchaudio
+
+google-generativeai 
+PyPDF2
