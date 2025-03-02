@@ -2,12 +2,14 @@
 <html>
 <head>
   <title>EduReels - Simplifying your Educational Journey</title>
+
   <h1><i>EduReels</i></h1>
   <!--Utilising CSS to implement the desired font unavailable within the standard html.-->
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <!-- Socket.IO client library -->
   <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
   <style>
+    
     body {
       font-family: 'JetBrains Mono';
       background: #f7f7f7;
@@ -305,5 +307,6 @@
         statusIndicator.textContent = "Status: Idle";
     });
   </script>
+  <tr style = "color:gold"> <th><img src = "{{ url_for('static', filename='logo.png') }}" width = "500"></th> </td>
 </body>
 </html>
